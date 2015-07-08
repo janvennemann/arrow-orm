@@ -7,3 +7,11 @@ before_script:
 - npm install -g grunt-cli
 before_install:
 - npm install npm -g
+deploy:
+  provider: npm
+  email: npmjs@appcelerator.com
+  api_key:
+    secure: BvrdMfhwlEa8L2h7e/3O0e0bc55BftrsX35rdzoV3xwZOUtg85yI9enlKNA9muAPWb7dk7U7+6UcebazSpz7TOceJ7Vbd5k5961vbkJcGj1tfCcdQ2Fg+C9TKRdkuFb9Nhr60Am6V9ZXNAYvlypivunSY9pSPXdNbVAKs3yHakk=
+  on:
+    tags: true
+    repo: appcelerator/arrow-orm
