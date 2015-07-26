@@ -11,14 +11,18 @@
  *   * Use the [Arrow Instance API](Arrow.Instance) to manage the Model records (or the data in
  *   model)
  *
- * To create a new Model programatically, load the `arrow` module, then call:
+ * To create a new Model programmatically, load the `arrow` module, then call:
  *
- *   * {@link Arrow.Model#define Model.define} to create a new Model. This is a static method called on the class.
- *   * {@link Arrow.Model#extend Model.extend} to create a new Model by extending the current instance.
- *   * {@link Arrow.Model#reduce Model.reduce} to create a new Model by reducing the current instance.
+ *   * {@link Arrow#static-method-createModel Arrow.createModel()} to create a new Model. This is a static or instance method.
+ *   * {@link Arrow.Model#define Model.define()} to create a new Model. This is a static method called on the class.
+ *   * {@link Arrow.Model#extend Model.extend()} to create a new Model by extending the current instance.
+ *   * {@link Arrow.Model#reduce Model.reduce()} to create a new Model by reducing the current instance.
  *
  * After you create the Model class, add it to the current server instance using the
- * {@link Arrow.addModel addModel} method.
+ * {@link Arrow#addModel addModel()} method.
+ *
+ * To automatically generate the standardized APIs, add the model to the Arrow instance before invoking
+ * the Arrow instance's `start()` method.
  *
  * For example:
  *
@@ -173,7 +177,8 @@
  *
  * This object can be passed to the following methods:
  *
- *   * {@link Arrow.Model#static-define}
+ *   * {@link Arrow#static-method-createModel}
+ *   * {@link Arrow.Model#static-method-define}
  *   * {@link Arrow.Model#extend}
  *   * {@link Arrow.Model#reduce}
  * @pseudo
@@ -295,11 +300,15 @@
  * @type Function
  * A function used to set the value of a property that will be sent to the client.
  * This property is useful if you want to define a custom field where the value is derived.
+ * The function is passed the value of the property, name of the property and the model instance.
+ * Return the value you want to return to the client.
  */
 /**
  * @property [set]
  * @type Function
  * A function used to set the value of a property that will be sent to the connector.
+ * The function is passed the value of the property, name of the property and the model instance.
+ * Return the value you want to return to the connector.
  */
 /**
  * @property [custom]

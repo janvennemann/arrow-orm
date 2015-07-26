@@ -14,6 +14,9 @@
  * that can be packaged and reused. For information, see the
  * [Arrow Connector guides](http://docs.appcelerator.com/platform/latest/#!/guide/Arrow_Connectors).
  *
+ * To add an existing connector to the project, see
+ * [Arrow Connector guides](http://docs.appcelerator.com/platform/latest/#!/guide/Add_a_Connector).
+ *
  * ### Create a New Connector
  *
  * To create a connector, either in the application or in a connector project, you must pass an
@@ -128,7 +131,7 @@
  * Retrieves the data source's metadata used to validate the configuration.
  * Called when the {@link #connect} method is invoked. **Unimplemented.**
  * Invoke the callback after the operation is completed. Pass the metadata object as the
- * second argument to the callback function.  In metadata the object,
+ * second argument to the callback function.  In the metadata object,
  * set the `fields` property to an array of Arrow.Metadata object used to validate the
  * configuration object.
  * @param {Function} callback Callback function passed a Error object (or null if successful)
