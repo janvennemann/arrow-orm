@@ -476,7 +476,7 @@ describe('models',function(){
 		});
 
 	});
-	
+
 	it('should not validate if required: false explicitly set',function(callback){
 
 		var Connector = new orm.MemoryConnector();
@@ -568,7 +568,7 @@ describe('models',function(){
 		});
 
 	});
-	
+
 	it('should raise exception if invalid field lengths',function(){
 
 		var Connector = new orm.MemoryConnector(),
@@ -946,7 +946,7 @@ describe('models',function(){
 		should(AgeModel.fields.age).be.ok;
 
 		// test extending fields based on name
-		
+
 		var RenamedAgeModel = User.extend('RenamedAgeUser',{
 			fields: {
 				NewName: { type: String, name: 'name' },
@@ -1374,7 +1374,7 @@ describe('models',function(){
 		should(function(){
 			model.set('email','what@example.com');
 		}).throw('cannot set read-only field: email');
-		
+
 		// should not through if force is called (last arg)
 		model.set('email','hello@example.com',true);
 
@@ -1929,6 +1929,38 @@ describe('models',function(){
 			should(collection.length).be.equal(4);
 		});
 
+	});
+
+	describe('#save', function (){
+		it.only('should support changes in array with mutation', function(done){
+			var Connector = new orm.MemoryConnector();
+
+			var User = orm.Model.define('user',{
+				fields: {
+					array: { type: Array }
+				},
+				connector: Connector
+			});
+
+			var instance = User.instance({array:[]});
+			should(instance).have.property('array');
+			instance.array = [1, 2];
+			instance.save(function (err, result) {
+				should(err).not.be.ok;
+				should(result).be.ok;
+				should(result.array).be.eql(instance.array);
+				var array = instance.array;
+				array.splice(0, 1);
+				instance.array = array;
+				should(instance.array).be.eql([2]);
+				instance.save(function (err, result) {
+					should(err).not.be.ok;
+					should(result).be.ok;
+					should(result.array).be.eql([2]);
+					done();
+				});
+			});
+		});
 	});
 
 	describe('#findOne', function(){
