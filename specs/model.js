@@ -1932,7 +1932,7 @@ describe('models',function(){
 	});
 
 	describe('#save', function (){
-		it.only('should support changes in array with mutation', function(done){
+		it('should support changes in array with mutation', function(done){
 			var Connector = new orm.MemoryConnector();
 
 			var User = orm.Model.define('user',{
@@ -3812,6 +3812,56 @@ describe('models',function(){
 			should(API.parameters.per_page).have.property('default',10);
 			should(API.parameters.per_page).have.property('description','Number of results per page.');
 			should(API.action).be.a.Function;
+		});
+
+		it('should create event properties', function(){
+			var Connector = new orm.MemoryConnector();
+
+			['create','delete','findAll','delete','deleteAll','findAndModify','query','distinct','count','findOne'].forEach(function (name) {
+				var def = {
+					fields: {
+						name: {
+							type: String,
+							required: true
+						}
+					},
+					connector: Connector
+				};
+				var properName = name.charAt(0).toUpperCase() + name.substring(1);
+
+				// specific overrides
+				def['before' + properName + 'Event'] = 'before' + properName;
+				def['after' + properName + 'Event'] = 'after' + properName;
+				def[name + 'EventTransformer'] = 'transformer';
+				var User = orm.Model.define('user', def);
+				var API = User[name+'API']();
+				should(API.beforeEvent).be.equal('before' + properName);
+				should(API.afterEvent).be.equal('after' + properName);
+				should(API.eventTransformer).be.equal('transformer');
+
+				// now use defaults
+				delete def['before' + properName + 'Event'];
+				delete def['after' + properName + 'Event'];
+				delete def[name + 'EventTransformer'];
+				def.beforeEvent = 'before';
+				def.afterEvent = 'after';
+				def.eventTransformer = 'eventTransformer';
+				User = orm.Model.define('user', def);
+				API = User[name+'API']();
+				should(API.beforeEvent).be.equal('before');
+				should(API.afterEvent).be.equal('after');
+				should(API.eventTransformer).be.equal('eventTransformer');
+
+				// now make sure these override the defaults
+				def['before' + properName + 'Event'] = 'before' + properName;
+				def['after' + properName + 'Event'] = 'after' + properName;
+				def[name + 'EventTransformer'] = 'transformer' + properName;
+				User = orm.Model.define('user', def);
+				API = User[name+'API']();
+				should(API.beforeEvent).be.equal('before' + properName);
+				should(API.afterEvent).be.equal('after' + properName);
+				should(API.eventTransformer).be.equal('transformer' + properName);
+			});
 		});
 
 	});
