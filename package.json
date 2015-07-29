@@ -1,9 +1,9 @@
 {
   "name": "arrow-orm",
-  "version": "0.2.71",
+  "version": "0.2.72",
   "description": "Arrow Builder ORM",
   "main": "index.js",
-  "license": "Appcelerator Commercial",
+  "license": "LicenseRef-LICENSE",
   "repository": {
     "type": "git",
     "url": "https://github.com/appcelerator/arrow-orm"
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-env": "^0.4.2",
