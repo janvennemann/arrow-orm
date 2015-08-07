@@ -109,19 +109,10 @@ describe('connectors',function(){
 	it('should be able to create promise',function(callback){
 
 		var connection,
-			start = false,
-			end = false;
+			incoming;
 
 		var MyConnector = orm.Connector.extend({
 			name: 'MyConnector',
-			startRequest: function(name, args, request, next){
-				start = true;
-				next();
-			},
-			endRequest: function (name, args, request, next){
-				end = true;
-				next();
-			},
 			loginRequired: function(request, next) {
 				next(null, !!!connection);
 			},
@@ -129,10 +120,14 @@ describe('connectors',function(){
 				connection = {
 					username: request.params.email
 				};
+				this.connection = {
+					username: request.params.email
+				};
 				next();
 			},
 			findOne: function(Model, id, next){
 				connection.foo = 'bar';
+				incoming = this.connection;
 				var instance = Model.instance({});
 				next(null, instance);
 			}
@@ -164,17 +159,24 @@ describe('connectors',function(){
 		should(UserPromise).be.an.object;
 		should(UserPromise.connector).be.an.object;
 		should(UserPromise.connector).not.be.equal(connector);
-		should(UserPromise.login).should.be.a.function;
+		should(UserPromise.getConnector()).be.equal(UserPromise.connector);
+		should(UserPromise.login).be.a.function;
+		should(UserPromise.request).not.be.null;
+		should(UserPromise.response).not.be.null;
+		should(UserPromise.connector.request).not.be.null;
+		should(UserPromise.connector.response).not.be.null;
+		should(UserPromise.request).be.equal(request);
+		should(UserPromise.response).be.equal(response);
 
 		UserPromise.findOne(1, function(err,user){
+			// console.log(err && err.stack);
 			should(err).not.be.ok;
 			should(user).be.ok;
 			should(user).have.property('name','Jeff');
 			// login should have been called and we set
 			should(connection).be.an.object;
 			should(connection).have.property('username','foo@bar.com');
-			should(start).be.true;
-			should(end).be.true;
+			should(incoming).have.property('username', 'foo@bar.com');
 
 			connection.username = 'bar@foo.com'; // set it to test that it doesn't change
 			UserPromise.findOne(2, function(err,user){
@@ -183,6 +185,9 @@ describe('connectors',function(){
 				should(connection).be.an.object;
 				// this means it didn't go back through login if still set
 				should(connection).have.property('username','bar@foo.com');
+				UserPromise.endRequest();
+				should(UserPromise.request).be.null;
+				should(UserPromise.response).be.null;
 				callback();
 			});
 		});
