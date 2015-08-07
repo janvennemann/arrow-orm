@@ -496,6 +496,60 @@ describe('connectors',function(){
 			});
 		});
 
+		it('should not call loginRequired on non-promise connectors', function (done) {
+			var MyConnector = orm.Connector.extend({
+				name: 'MyConnector',
+				loginRequired: function(request, callback) {
+					throw new Error("shouldn't have been called");
+				},
+				findAll: function (Model, callback) {
+					return callback(null, []);
+				}
+			});
+			var connector = new MyConnector();
+			connector.findAll(null, function (err, results) {
+				should(err).be.not.ok;
+				should(results).be.an.array;
+				done();
+			});
+		});
+
+		it('should call loginRequired on promise connectors', function (done) {
+			var called;
+			var MyConnector = orm.Connector.extend({
+				name: 'MyConnector',
+				loginRequired: function(request, callback) {
+					called = true;
+					callback(null, false);
+				},
+				findAll: function (Model, callback) {
+					return callback(null, []);
+				}
+			});
+			var connector = (new MyConnector()).createRequest({}, {});
+			connector.findAll(null, function (err, results) {
+				should(err).be.not.ok;
+				should(results).be.an.array;
+				should(called).be.true;
+				done();
+			});
+		});
+
+		it('should not call loginRequired on promise connectors if not defined', function (done) {
+			var MyConnector = orm.Connector.extend({
+				name: 'MyConnector',
+				findAll: function (Model, callback) {
+					return callback(null, []);
+				}
+			});
+			var connector = (new MyConnector()).createRequest({}, {});
+			connector.findAll(null, function (err, results) {
+				should(err).be.not.ok;
+				should(results).be.an.array;
+				done();
+			});
+		});
+
 		it("should support custom connect", function(callback){
 			var called;
 			var MyConnector = orm.Connector.extend({
