@@ -40,22 +40,6 @@ module.exports = function(grunt) {
 	// set required env vars
 	grunt.registerTask('env', function() {
 		process.env.TEST = '1';
-
-		// create list of search paths
-		var configs = [path.resolve('.apibuilder')];
-		if (HOME) { configs.push(path.join(HOME, '.apibuilder')); }
-
-		for (var i = 0; i < configs.length; i++) {
-			var config = configs[i];
-			if (fs.existsSync(config)) {
-				_.merge(process.env, JSON.parse(fs.readFileSync(config, 'utf8')));
-				break;
-			}
-		}
-
-		if (process.env.TRAVIS && !process.env.npm_config__auth) {
-			process.env.npm_config__auth = process.env.NPM_AUTH_KEY;
-		}
 	});
 
 	// run test coverage
