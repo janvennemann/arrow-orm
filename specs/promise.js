@@ -81,4 +81,78 @@ describe('promise',function(){
 		});
 	});
 
+	it('should expose apis', function () {
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user',{
+			fields: {
+				name: {
+					type: String,
+					required: true
+				},
+				age: {
+					type: Number,
+					required: true
+				}
+			},
+			connector: Connector
+		});
+
+		var UserPromise = User.createRequest({}, {});
+		should(UserPromise).have.property('findAll');
+		should(UserPromise).have.property('findAllAPI');
+		var findAllAPI = UserPromise.findAllAPI();
+		should(findAllAPI).be.an.object;
+		should(findAllAPI).have.property('generated', true);
+		should(findAllAPI).have.property('uiSort', 1);
+		should(findAllAPI).have.property('beforeEvent');
+		should(findAllAPI).have.property('afterEvent');
+		should(findAllAPI).have.property('eventTransformer');
+		should(findAllAPI).have.property('description', 'Find all users');
+		should(findAllAPI).have.property('actionGroup', 'read');
+		should(findAllAPI).have.property('method', 'GET');
+		should(findAllAPI).have.property('dependsOnAny', ['findAll', 'query']);
+		should(findAllAPI).have.property('action');
+	});
+
+	it('should support different this contexts', function (done) {
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user',{
+			fields: {
+				name: {
+					type: String,
+					required: true
+				},
+				age: {
+					type: Number,
+					required: true
+				}
+			},
+			connector: Connector
+		});
+
+		var UserPromise = User.createRequest({}, {});
+		UserPromise.findAll(function (err, result) {
+			should(err).be.not.ok;
+			should(result).be.an.array;
+			// use a null context
+			UserPromise.findAll.apply(null, [function (err) {
+				should(err).be.not.ok;
+				should(result).be.an.array;
+				// use our own instance
+				UserPromise.findAll.apply(UserPromise, [function (err) {
+					should(err).be.not.ok;
+					should(result).be.an.array;
+					// pass in an invalid Class type
+					UserPromise.findAll.apply(this, [function (err) {
+						should(err).be.not.ok;
+						should(result).be.an.array;
+						done();
+					}]);
+				}]);
+			}]);
+		});
+	});
+
 });
