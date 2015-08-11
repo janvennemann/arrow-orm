@@ -3,6 +3,23 @@ var should = require('should'),
 
 describe('util', function () {
 
+	it('should only wrap once', function () {
+		var Clazz = {
+			name: 'foo',
+			description: 'foo desc'
+		};
+		var instance = {
+			findAll: function () {
+				return 'findAll';
+			}
+		};
+		var delegate = util.createTransactionLoggedDelegate(Clazz, 'type', instance, 'findAll');
+		should(delegate).be.a.function;
+		var delegate2 = util.createTransactionLoggedDelegate(Clazz, 'type', instance, 'findAll');
+		should(delegate2).be.a.function;
+		should(delegate).equal(delegate2);
+	});
+
 	it('should support transaction logging delegate sync (no request)', function () {
 		var Clazz = {
 			name: 'foo',
