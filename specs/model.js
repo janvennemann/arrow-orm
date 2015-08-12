@@ -2837,6 +2837,28 @@ describe('models',function(){
 			User.actions.should.eql(['create']);
 		});
 
+		it('should be able to set disabledActions', function(){
+			var Connector = new orm.MemoryConnector();
+
+			var User = orm.Model.define('user',{
+				fields: {
+					name: {
+						type: String,
+						required: false
+					}
+				},
+				connector: Connector,
+				metadata: {
+					memory: {
+						foo: 'bar'
+					}
+				},
+				disabledActions: ['create']
+			});
+
+			User.disabledActions.should.eql(['create']);
+		});
+
 		it('should require an array of actions', function(){
 			var Connector = new orm.MemoryConnector();
 
