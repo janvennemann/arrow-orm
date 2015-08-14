@@ -735,6 +735,78 @@ describe('models',function(){
 		preowned.get('cabinEntertainment')[2].should.have.property('feature',"XM satellite radio / Eight 115v outlets");
 	});
 
+	it("should support fields of type Object with sub-validation", function () {
+		var Connector = new orm.MemoryConnector();
+		var aircraftStatus = orm.Model.define("aircraftStatus", {
+				fields: {
+					status: {type: String, required: true}
+				},
+				connector: Connector,
+				autogen: false
+			}),
+			cabinEntertainment = orm.Model.define("cabinEntertainment", {
+				fields: {
+					feature: {type: String, required: true}
+				},
+				connector: Connector,
+				autogen: false
+			}),
+			Preowned = orm.Model.define("preowned", {
+				fields: {
+					model: {type: String},
+					aircraftStatus: {type: Object, model: 'aircraftStatus'},
+					cabinEntertainment: {type: Array, model: 'cabinEntertainment'}
+				},
+				connector: Connector,
+				autogen: false
+			});
+
+		Connector.models = {
+			aircraftStatus: aircraftStatus,
+			cabinEntertainment: cabinEntertainment,
+			Preowned: Preowned
+		};
+
+		var data = {
+			model: 'Rick',
+			aircraftStatus: {
+				status: 'in-flight'
+			},
+			cabinEntertainment: [
+				{
+					"feature": "DVD player (multi-region) / 15” LCD flat panel swing-out monitor"
+				},
+				{
+					"feature": "Rosen View LX moving map program / Six Rosen 6.5” LCD monitors"
+				},
+				{
+					"feature": "XM satellite radio / Eight 115v outlets"
+				}
+			]
+		};
+		var preowned = Preowned.instance(data, false);
+		preowned.get('model').should.equal('Rick');
+		preowned.get('aircraftStatus').should.have.property('status', 'in-flight');
+		preowned.get('cabinEntertainment').should.eql(data.cabinEntertainment);
+		preowned.get('cabinEntertainment').should.have.length(3);
+		preowned.get('cabinEntertainment')[0].should.have.property('feature', "DVD player (multi-region) / 15” LCD flat panel swing-out monitor");
+		preowned.get('cabinEntertainment')[1].should.have.property('feature', "Rosen View LX moving map program / Six Rosen 6.5” LCD monitors");
+		preowned.get('cabinEntertainment')[2].should.have.property('feature', "XM satellite radio / Eight 115v outlets");
+
+		// Should throw on objects that are invalid.
+		delete data.aircraftStatus.status;
+		(function missingRequiredFieldOnChildModels() {
+			preowned = Preowned.instance(data, false);
+		}).should.throw();
+		
+		// Should throw on arrays that are invalid.
+		data.aircraftStatus.status = 'in-flight';
+		delete data.cabinEntertainment[0].feature;
+		(function missingRequiredFieldOnChildModels() {
+			preowned = Preowned.instance(data, false);
+		}).should.throw();
+	});
+
 	it('should be able to CRUD',function(callback){
 
 		var Connector = new orm.MemoryConnector();
