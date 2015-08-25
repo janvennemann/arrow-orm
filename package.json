@@ -1,6 +1,6 @@
 {
   "name": "arrow-orm",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Arrow Builder ORM",
   "main": "index.js",
   "license": "LicenseRef-LICENSE",
