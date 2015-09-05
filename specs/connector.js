@@ -25,8 +25,10 @@ describe('connectors', function () {
 	it('should not serialize the full object graph', function () {
 		var MyConnector = orm.Connector.extend({name: 'MyConnector'});
 		var connector = new MyConnector();
-		should(require('util').inspect(connector)).be.equal('[object Connector]');
-		should(JSON.stringify(connector)).be.equal('"[object Connector]"');
+		should(require('util').inspect(connector)).be.equal('[object Connector:MyConnector]');
+		should(JSON.stringify(connector)).be.equal(JSON.stringify({
+			name: 'MyConnector'
+		}));
 	});
 
 	it('should be able to register and retrieve connectors', function () {

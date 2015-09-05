@@ -43,6 +43,48 @@ describe('models',function(){
 		should(orm.Model.getModels()[0].generated).be.false;
 	});
 
+	it('should be to JSON serialize',function(){
+		var Connector = new orm.MemoryConnector();
+		var User = orm.Model.define('user',{
+			fields: {
+				name: {
+					type: String,
+					default: 'Jeff'
+				}
+			},
+			connector: Connector
+		});
+		should(JSON.stringify(User)).be.eql(JSON.stringify({
+			name: 'user',
+			fields: {
+				name: {
+					type: 'string',
+					default: 'Jeff',
+					required: false,
+					optional: true
+				}
+			},
+			connector: {
+				name: 'memory'
+			}
+		}));
+	});
+
+	it('should be to util.inspect serialize',function(){
+		var Connector = new orm.MemoryConnector();
+		var User = orm.Model.define('user',{
+			fields: {
+				name: {
+					type: String,
+					default: 'Jeff'
+				}
+			},
+			connector: Connector
+		});
+		var inspect = require('util').inspect;
+		should(inspect(User)).be.equal('[object Model:user]');
+	});
+
 	it('should set optionality correctly',function(){
 		var Connector = new orm.MemoryConnector();
 		var User = orm.Model.define('user',{
@@ -798,7 +840,7 @@ describe('models',function(){
 		(function missingRequiredFieldOnChildModels() {
 			preowned = Preowned.instance(data, false);
 		}).should.throw();
-		
+
 		// Should throw on arrays that are invalid.
 		data.aircraftStatus.status = 'in-flight';
 		delete data.cabinEntertainment[0].feature;
