@@ -68,10 +68,13 @@
  * The following methods are left unimplemented by the Connector class but may be implemented
  * when creating a new connector:
  *
+ * * {@link #createModelsFromSchema}
+ * * {@link #coerceCustomType}
  * * {@link #endRequest}
  * * {@link #fetchConfig}
  * * {@link #fetchMetadata}
  * * {@link #fetchSchema}
+ * * {@link #getCustomType}
  * * {@link #login}
  * * {@link #loginRequired}
  * * {@link #postCreate}
@@ -110,6 +113,22 @@
  */
 
 /**
+ * @method createModelsFromSchema
+ * Creates models from the schema object returned from the `fetchSchema` method. **Unimplemented.**
+ */
+/**
+ * @method coerceCustomType
+ * Determines if the model field can be implictly converted to the value.
+ * If it can, you should set the model field to the converted value.
+ * **Unimplemented.** Implement this method to support custom data types for model fields.
+ * @since 1.2.8
+ * @param {Arrow.Instance} instance An instance of one of the connector's models.
+ * @param {Any} field Field value to validate.
+ * @param {String} name Field name to coerce.
+ * @param {Any} value Value to coerce.
+ * @returns {Boolean} Returns `true` if the type can be implicitly converted else `false`.
+ */
+/**
  * @method endRequest
  * Request interceptor invoked after the request completes. **Unimplemented.**
  * Invoke the `next` function when the operation completes.
@@ -144,6 +163,16 @@
  * @param {Function} callback Callback function passed a Error object (or null if successful)
  * and the schema object.
  */
+ /**
+  * @method getCustomType
+  * Gets the field value based upon a custom type. **Unimplemented.**
+  * @since 2.1.8
+  * @param {Arrow.Instance} instance An instance of one of the connector's models.
+  * @param {Object} field Field value to validate.
+  * @param {String} name Field name to coerce.
+  * @param {Any} value Value to coerce.
+  * @returns {Object} Returns an instance of your custom type.
+  */
 /**
  * @method loginRequired
  * Determines if a login is required to make a request to the data source.
