@@ -3627,14 +3627,14 @@ describe('models',function(){
 			var API = User.distinctAPI();
 			should(API).have.property('method','GET');
 			should(API).have.property('description','Find distinct users');
-			should(API).have.property('path','./distinct');
+			should(API).have.property('path','./distinct/:field');
 			should(API).have.property('generated',true);
 			should(API).have.property('parameters');
 			should(API).have.property('action');
 			should(API.action).be.a.Function;
 			should(API.parameters).have.property('field');
 			should(API.parameters).have.property('where');
-			should(API.parameters.field).have.property('type','query');
+			should(API.parameters.field).have.property('type','path');
 			should(API.parameters.field).have.property('optional',false);
 			should(API.parameters.field).have.property('required',true);
 			should(API.parameters.field).have.property('description','The field name that must be distinct.');
