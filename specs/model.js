@@ -3705,11 +3705,12 @@ describe('models',function(){
 						optional: true
 					}
 				},
+				findAllDescription: 'Find all the users, up to 1000 of them',
 				connector: Connector
 			});
 			var API = User.findAllAPI();
 			should(API).have.property('method','GET');
-			should(API).have.property('description','Find all users');
+			should(API).have.property('description','Find all the users, up to 1000 of them');
 			should(API).have.property('generated',true);
 			should(API).not.have.property('parameters');
 			should(API).have.property('action');
