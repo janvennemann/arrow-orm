@@ -2615,45 +2615,50 @@ describe('models',function(){
 				},
 				connector: Connector
 			});
+			
+			User.distinct('type,name', {}, function (err, results) {
+				should(err).not.be.ok;
+				should(results).be.empty;
+			});
 
-			User.create({type:'connector',name:'mongo',version:'1.0.1'});
-			User.create({type:'connector',name:'mongo',version:'1.0.2'});
-			User.create({type:'connector',name:'mongo',version:'1.0.3'});
-			User.create({type:'connector',name:'mongo',version:'1.0.4'});
-			User.create({type:'connector',name:'mysql',version:'1.0.0'});
-			User.create({type:'connector',name:'sf',version:'1.0.0'});
+			User.create({type: 'connector', name: 'mongo', version: '1.0.1'});
+			User.create({type: 'connector', name: 'mongo', version: '1.0.2'});
+			User.create({type: 'connector', name: 'mongo', version: '1.0.3'});
+			User.create({type: 'connector', name: 'mongo', version: '1.0.4'});
+			User.create({type: 'connector', name: 'mysql', version: '1.0.0'});
+			User.create({type: 'connector', name: 'sf', version: '1.0.0'});
 
 			// form the unique key on the values of both of these fields
-			User.distinct('type,name',{},function(err,results){
+			User.distinct('type,name', {}, function (err, results) {
 				should(err).not.be.ok;
 				should(results).be.an.array;
-				should(results[0]).have.property('name','mongo');
-				should(results[0]).have.property('type','connector');
-				should(results[0]).have.property('version','1.0.1');
-				should(results[1]).have.property('name','mysql');
-				should(results[1]).have.property('type','connector');
-				should(results[1]).have.property('version','1.0.0');
-				should(results[2]).have.property('name','sf');
-				should(results[2]).have.property('type','connector');
-				should(results[2]).have.property('version','1.0.0');
+				should(results[0]).have.property('name', 'mongo');
+				should(results[0]).have.property('type', 'connector');
+				should(results[0]).have.property('version', '1.0.1');
+				should(results[1]).have.property('name', 'mysql');
+				should(results[1]).have.property('type', 'connector');
+				should(results[1]).have.property('version', '1.0.0');
+				should(results[2]).have.property('name', 'sf');
+				should(results[2]).have.property('type', 'connector');
+				should(results[2]).have.property('version', '1.0.0');
 			});
 
 			// form the unique key on the values of both of these fields
-			User.distinct('type, name',{},function(err,results){
+			User.distinct('type, name', {}, function (err, results) {
 				should(err).not.be.ok;
 				should(results).be.an.array;
-				should(results[0]).have.property('name','mongo');
-				should(results[0]).have.property('type','connector');
-				should(results[0]).have.property('version','1.0.1');
-				should(results[1]).have.property('name','mysql');
-				should(results[1]).have.property('type','connector');
-				should(results[1]).have.property('version','1.0.0');
-				should(results[2]).have.property('name','sf');
-				should(results[2]).have.property('type','connector');
-				should(results[2]).have.property('version','1.0.0');
-				callback();
+				should(results[0]).have.property('name', 'mongo');
+				should(results[0]).have.property('type', 'connector');
+				should(results[0]).have.property('version', '1.0.1');
+				should(results[1]).have.property('name', 'mysql');
+				should(results[1]).have.property('type', 'connector');
+				should(results[1]).have.property('version', '1.0.0');
+				should(results[2]).have.property('name', 'sf');
+				should(results[2]).have.property('type', 'connector');
+				should(results[2]).have.property('version', '1.0.0');
 			});
 
+			callback();
 		});
 
 		it('should return distinct values', function(callback){
