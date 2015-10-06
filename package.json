@@ -1,9 +1,12 @@
 {
   "name": "arrow-orm",
-  "version": "0.3.24",
+  "version": "0.3.26",
   "description": "Arrow Builder ORM",
   "main": "index.js",
   "license": "LicenseRef-LICENSE",
+  "bugs": {
+    "url": "https://jira.appcelerator.org/browse/API"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/appcelerator/arrow-orm"
