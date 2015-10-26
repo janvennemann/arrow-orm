@@ -1286,6 +1286,22 @@ describe('models',function(){
 		should(User.getConnector()).equal(connector2);
 	});
 
+	it('should error with invalid names', function () {
+		var Connector = new orm.MemoryConnector();
+		should(function () {
+			orm.Model.define('かくざ', {
+				fields: {name: {type: String, required: false}},
+				connector: Connector
+			});
+		}).throw();
+		should(function () {
+			orm.Model.define('my model', {
+				fields: {name: {type: String, required: false}},
+				connector: Connector
+			});
+		}).throw();
+	});
+
 	it('should error if already deleted',function(callback){
 
 		var Connector = new orm.MemoryConnector();
