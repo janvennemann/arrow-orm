@@ -2972,6 +2972,28 @@ describe('models',function(){
 			User.actions.should.eql(['create']);
 		});
 
+		it('should be able set specific action', function(){
+			var Connector = new orm.MemoryConnector();
+
+			var User = orm.Model.define('user',{
+				fields: {
+					name: {
+						type: String,
+						required: false
+					}
+				},
+				connector: Connector,
+				metadata: {
+					memory: {
+						foo: 'bar'
+					}
+				},
+				actions: ['findOne']
+			});
+
+			User.actions.should.eql(['findOne']);
+		});
+
 		it('should be able to set disabledActions', function(){
 			var Connector = new orm.MemoryConnector();
 
