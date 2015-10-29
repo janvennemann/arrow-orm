@@ -1,5 +1,6 @@
 var should = require('should'),
 	async = require('async'),
+	_ = require('lodash'),
 	util = require('util'),
 	orm = require('../');
 
@@ -723,6 +724,87 @@ describe('connectors', function () {
 				should(connector.metadata.schema).have.property('foo', 'bar');
 				callback();
 			});
+		});
+
+		it("should support createModelsFromSchema", function (callback) {
+			var MyConnector = orm.Connector.extend({
+				name: 'MyConnector',
+				fetchSchema: function (callback) {
+					callback(null, {
+						user: {
+							name: 'MyConnector/user',
+							autogen: true,
+							fields: {
+								name: {type: String}
+							},
+							connector: this,
+							generated: true
+						}
+					});
+				}
+			});
+			
+			// Simulate having an Arrow server.
+			orm.Connector.Arrow = {
+				models: {},
+				getGlobal: function() {
+					return this;
+				},
+				registerModelsForConnector: function (connector, models) {
+					if (!models || !_.isObject(models)) {
+						throw new Error('Invalid argument passed to registerModelsForConnector: connector/' + connector.name + '; models must be an object.');
+					}
+					Object.keys(models).forEach(function (name) {
+						var Model = models[name];
+						if (Model.visible || Model.visible === undefined) {
+							this.models[name] = Model;
+						}
+					}.bind(this));
+				}
+			};
+
+			async.series([
+				function sync(proceed) {
+					var connector = new MyConnector();
+					connector.createModelsFromSchema = function () {
+						this.models = {
+							'MyConnector/user': this.schema.user
+						};
+					};
+					connector.connect(function (err) {
+						should(err).not.be.ok;
+						should(connector.models).have.property('MyConnector/user');
+						proceed();
+					});
+				},
+				function async(proceed) {
+					var connector = new MyConnector();
+					connector.createModelsFromSchema = function (done) {
+						this.models = {
+							'MyConnector/user': this.schema.user
+						};
+						done();
+					};
+					connector.connect(function (err) {
+						should(err).not.be.ok;
+						should(connector.models).have.property('MyConnector/user');
+						proceed();
+					});
+				},
+				function withoutResults(proceed) {
+					var connector = new MyConnector();
+					connector.createModelsFromSchema = function () { };
+					connector.connect(function (err) {
+						should(err).not.be.ok;
+						proceed();
+					});
+				},
+				function restoreState(proceed) {
+					delete orm.Connector.Arrow;
+					proceed();
+				}
+			], callback);
+			
 		});
 
 		it("should support custom primary key type using idAttribute", function () {
