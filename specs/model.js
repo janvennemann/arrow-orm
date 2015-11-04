@@ -1449,6 +1449,29 @@ describe('models',function(){
 
 	});
 
+	it('should error when given a string for model.instance', function () {
+
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user', {
+			fields: {
+				name: {
+					type: String,
+					required: false
+				},
+				email: {
+					type: String,
+					readonly: true
+				}
+			},
+			connector: Connector
+		});
+
+		should(function () {
+			var model = User.instance('<foo>bar</foo>', true);
+		}).throw();
+	});
+
 	it('should not return readonly fields in values',function(){
 
 		var Connector = new orm.MemoryConnector();
