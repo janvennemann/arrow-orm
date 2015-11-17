@@ -239,6 +239,12 @@ describe('connectors', function () {
 			model.query({per_page: 3, page: 3}, noop);
 			shouldBe = {per_page: 4, limit: 4, page: 4, skip: 12};
 			model.query({skip: 12, limit: 4}, noop);
+			shouldBe = {per_page: 2, limit: 2, page: 1, skip: 0};
+			model.query({page: 1, per_page: 2}, noop);
+			shouldBe = {per_page: 2, limit: 2, page: 2, skip: 2};
+			model.query({page: 2, per_page: 2}, noop);
+			shouldBe = {per_page: 2, limit: 2, page: 3, skip: 4};
+			model.query({page: 3, per_page: 2}, noop);
 
 		});
 

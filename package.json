@@ -1,6 +1,6 @@
 {
   "name": "arrow-orm",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "Arrow Builder ORM",
   "main": "index.js",
   "license": "LicenseRef-LICENSE",
@@ -20,6 +20,7 @@
     "chalk": "^1.1.0",
     "debug": "^2.1.1",
     "lodash": "^3.10.1",
+    "lru-cache": "^2.7.0",
     "mingo": "^0.3.1",
     "pkginfo": "^0.3.0",
     "pluralize": "^1.0.3"
