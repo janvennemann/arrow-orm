@@ -1,5 +1,6 @@
 var should = require('should'),
 	async = require('async'),
+	assert = require('assert'),
 	util = require('util'),
 	_ = require('lodash'),
 	orm = require('../');
@@ -389,6 +390,94 @@ describe('models', function () {
 			(function () {
 				user.age = 12;
 			}).should.throw('field "age" failed validation using expression "/^[0-9]$/" and value: 12');
+
+			callback();
+		});
+
+	});
+
+	it('should be able to combine validation errors', function (callback) {
+
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user', {
+			fields: {
+				age: {
+					type: Number,
+					validator: /^[0-9]$/
+				},
+				height: {
+					type: Number,
+					validator: /^[0-9]$/
+				}
+			},
+			connector: Connector
+		});
+
+		User.create({age: 9, height: 9}, function (err, user) {
+			should(err).not.be.ok;
+			should(user).be.an.object;
+			should(user.age).be.equal(9);
+			should(user.height).be.equal(9);
+
+			assert.throws(function () {
+					user.set({
+						age: 12,
+						height: 12
+					});
+				},
+				function (err) {
+					should(err).have.property('field', 'age, height');
+					should(err).have.property('message', 'field "age" failed validation using expression "/^[0-9]$/" and value: 12\nfield "height" failed validation using expression "/^[0-9]$/" and value: 12');
+					return true;
+				});
+
+			callback();
+		});
+
+	});
+
+	it('should be able to validate the whole model', function (callback) {
+
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user', {
+			fields: {
+				age: { type: Number},
+				height: { type: Number}
+			},
+			validator: function (instance) {
+				var errors = [];
+				if (instance.get('age') > 9) {
+					errors.push('Age must be less than 10.');
+				}
+				if (instance.get('height') > 9) {
+					errors.push('Height must be less than 10.');
+				}
+				if (errors.length) {
+					return errors.join('\n');
+				}
+			},
+			connector: Connector
+		});
+
+		User.create({age: 9, height: 9}, function (err, user) {
+			should(err).not.be.ok;
+			should(user).be.an.object;
+			should(user.age).be.equal(9);
+			should(user.height).be.equal(9);
+
+			assert.throws(function () {
+					user.set({
+						age: 12,
+						height: 12
+					});
+				},
+				function (err) {
+					should(err).have.property('field', 'user');
+					should(err).have.property('message', 'Age must be less than 10.\nHeight must be less than 10.');
+					return true;
+				});
 
 			callback();
 		});
