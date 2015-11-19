@@ -3878,7 +3878,7 @@ describe('models', function () {
 			should(API.parameters.id).have.property('type', 'path');
 			should(API.parameters.id).have.property('optional', false);
 			should(API.parameters.id).have.property('required', true);
-			should(API.parameters.id).have.property('description', 'The user ID');
+			should(API.parameters.id).have.property('description', 'The find succeeded, and the results are available.');
 		});
 
 		it('should create findAll', function () {
