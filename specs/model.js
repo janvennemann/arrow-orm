@@ -354,6 +354,14 @@ describe('models', function () {
 				name: {
 					type: String,
 					default: 'Jeff'
+				},
+				age: {
+					type: Number,
+					default: 0
+				},
+				unintelligent: {
+					type: Boolean,
+					default: false
 				}
 			},
 			connector: Connector
@@ -363,6 +371,8 @@ describe('models', function () {
 			should(err).not.be.ok;
 			should(user).be.an.object;
 			should(user.name).be.equal('Jeff');
+			should(user.age).be.equal(0);
+			should(user.unintelligent).be.equal(false);
 			callback();
 		});
 
