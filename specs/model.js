@@ -71,6 +71,29 @@ describe('models', function () {
 		}));
 	});
 
+	it('should not allow spaces or periods in models', function () {
+		var errorPrefix = 'Model names cannot contain characters that need to be encoded in a URL: ';
+		var Connector = new orm.MemoryConnector();
+		should(function () {
+			orm.Model.define('user ', {
+				fields: {name: {type: String}},
+				connector: Connector
+			});
+		}).throw(errorPrefix + '"user "');
+		should(function () {
+			orm.Model.define('user.cry', {
+				fields: {name: {type: String}},
+				connector: Connector
+			});
+		}).throw('Model names cannot contain periods: "user.cry"');
+		should(function () {
+			orm.Model.define('user cry.hey', {
+				fields: {name: {type: String}},
+				connector: Connector
+			});
+		}).throw(errorPrefix + '"user cry.hey"');
+	});
+
 	it('should be to util.inspect serialize', function () {
 		var Connector = new orm.MemoryConnector();
 		var User = orm.Model.define('user', {
