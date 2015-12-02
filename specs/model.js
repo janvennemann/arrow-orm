@@ -1056,7 +1056,7 @@ describe('models', function () {
 		});
 
 		tasks.push(function (next) {
-			User.findOne(user.getPrimaryKey(), function (err, result) {
+			User.findByID(user.getPrimaryKey(), function (err, result) {
 				should(err).not.be.ok;
 				should(result).be.an.Object;
 				should(result.name).be.equal('jeff');
@@ -1105,7 +1105,7 @@ describe('models', function () {
 		});
 
 		tasks.push(function (next) {
-			User.findOne(user, function (err, result) {
+			User.findByID(user, function (err, result) {
 				should(err).not.be.ok;
 				should(result).not.be.ok;
 				next();
@@ -2236,7 +2236,7 @@ describe('models', function () {
 		});
 	});
 
-	describe('#findOne', function () {
+	describe('#findByID', function () {
 
 		it('should be able find multiple instances', function (callback) {
 			var Connector = new orm.MemoryConnector();
@@ -2265,7 +2265,7 @@ describe('models', function () {
 				should(results[0].name).eql("George");
 				should(results[1].name).eql("Erin");
 
-				User.findOne([
+				User.findByID([
 					results[0].id,
 					results[1].id
 				], function (err, result) {
@@ -2304,7 +2304,7 @@ describe('models', function () {
 
 				id = result.getPrimaryKey();
 
-				User.findOne([id, 100000], function (err, result) {
+				User.findByID([id, 100000], function (err, result) {
 					should(err).not.be.ok;
 					should(result).be.ok;
 					should(result).be.an.Array;
@@ -2408,7 +2408,7 @@ describe('models', function () {
 						return callback(err);
 					}
 
-					User.findOne(createdRecord.getPrimaryKey() + 1, function (err, result) {
+					User.findByID(createdRecord.getPrimaryKey() + 1, function (err, result) {
 						if (err) {
 							return callback(err);
 						}
@@ -2579,7 +2579,7 @@ describe('models', function () {
 					should(result[0].name).eql("George");
 					should(result[1].name).eql("Erin");
 
-					User.findOne([
+					User.findByID([
 						results[0].id,
 						results[1].id
 					], function (err, result) {
@@ -3131,10 +3131,10 @@ describe('models', function () {
 						foo: 'bar'
 					}
 				},
-				actions: ['findOne']
+				actions: ['findByID']
 			});
 
-			User.actions.should.eql(['findOne']);
+			User.actions.should.eql(['findByID']);
 		});
 
 		it('should be able to set disabledActions', function () {
@@ -3875,7 +3875,7 @@ describe('models', function () {
 			should(API.parameters.where).have.property('description', 'Constrains values for fields. The value should be encoded JSON.');
 		});
 
-		it('should create findOne', function () {
+		it('should create findByID', function () {
 			var Connector = new orm.MemoryConnector();
 
 			var User = orm.Model.define('user', {
@@ -3899,9 +3899,9 @@ describe('models', function () {
 				},
 				connector: Connector
 			});
-			var API = User.findOneAPI();
+			var API = User.findByIDAPI();
 			should(API).have.property('method', 'GET');
-			should(API).have.property('description', 'Find one user');
+			should(API).have.property('description', 'Find one user by ID');
 			should(API).have.property('path', './:id');
 			should(API).have.property('generated', true);
 			should(API).have.property('parameters');
@@ -4185,7 +4185,7 @@ describe('models', function () {
 		it('should create event properties', function () {
 			var Connector = new orm.MemoryConnector();
 
-			['create', 'delete', 'findAll', 'delete', 'deleteAll', 'findAndModify', 'query', 'distinct', 'count', 'findOne'].forEach(function (name) {
+			['create', 'delete', 'findAll', 'delete', 'deleteAll', 'findAndModify', 'query', 'distinct', 'count', 'findByID'].forEach(function (name) {
 				var def = {
 					fields: {
 						name: {
@@ -4498,14 +4498,14 @@ describe('models', function () {
 			should(callCount).equal(2);
 		});
 
-		it('should cache findOne after create', function () {
+		it('should cache findByID after create', function () {
 			var Connector = new orm.MemoryConnector(),
-				_findOne = Connector.findOne,
+				_findByID = Connector.findByID,
 				_instance,
 				callCount = 0;
-			Connector.findOne = function () {
+			Connector.findByID = function () {
 				callCount += 1;
-				_findOne.apply(this, arguments);
+				_findByID.apply(this, arguments);
 			};
 
 			var User = orm.Model.define('user', {
@@ -4532,21 +4532,21 @@ describe('models', function () {
 			}
 
 			should(callCount).equal(0);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
 			should(callCount).equal(0);
 		});
 
-		it('should cache findOne after findAll', function () {
+		it('should cache findByID after findAll', function () {
 			var Connector = new orm.MemoryConnector(),
-				_findOne = Connector.findOne,
+				_findByID = Connector.findByID,
 				_instance,
 				callCount = 0;
-			Connector.findOne = function () {
+			Connector.findByID = function () {
 				callCount += 1;
-				_findOne.apply(this, arguments);
+				_findByID.apply(this, arguments);
 			};
 
 			var User = orm.Model.define('user', {
@@ -4582,9 +4582,9 @@ describe('models', function () {
 			should(callCount).equal(0);
 			User.findAll(handleFindAll);
 			should(callCount).equal(0);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
-			User.findOne(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
+			User.findByID(_instance.getPrimaryKey(), handleFindOne);
 			should(callCount).equal(0);
 		});
 

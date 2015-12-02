@@ -51,9 +51,11 @@ The model has several instance methods:
 | update        | update a Model instance                                          |
 | remove        | remove a Model instance                                          |
 | removeAll     | remove all Model instances                                       |
+| findAll       | find all Models                                                  |
+| query         | find a Model from a query                                        |
 | find          | find one or more Models                                          |
-| findOne       | find one Model from a primary key                                |
-| findAll       | find all Model                                                   |
+| findByID      | find one Model by a primary key                                  |
+| findManyByID  | find many Models by a primary key                                |
 | findAndModify | find a Model from a query and modify values                      |
 | distinct      | find unique values for a Model field name                        |
 | count         | find count of a query                                            |
@@ -129,7 +131,7 @@ To create a connector, you can either inherit from the `Connector` class using `
 var MyConnector = orm.Connector.extend({
 	constructor: function(){
 	},
-	findOne: function(Model, id, callback) {
+	findByID: function(Model, id, callback) {
 	}
 });
 ```

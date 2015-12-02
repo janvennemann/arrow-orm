@@ -135,7 +135,7 @@ describe('connectors', function () {
 				};
 				next();
 			},
-			findOne: function (Model, id, next) {
+			findByID: function (Model, id, next) {
 				connection.foo = 'bar';
 				incoming = this.connection;
 				var instance = Model.instance({});
@@ -178,7 +178,7 @@ describe('connectors', function () {
 		should(UserPromise.request).be.equal(request);
 		should(UserPromise.response).be.equal(response);
 
-		UserPromise.findOne(1, function (err, user) {
+		UserPromise.findByID(1, function (err, user) {
 			// console.log(err && err.stack);
 			should(err).not.be.ok;
 			should(user).be.ok;
@@ -189,7 +189,7 @@ describe('connectors', function () {
 			should(incoming).have.property('username', 'foo@bar.com');
 
 			connection.username = 'bar@foo.com'; // set it to test that it doesn't change
-			UserPromise.findOne(2, function (err, user) {
+			UserPromise.findByID(2, function (err, user) {
 				should(err).not.be.ok;
 				should(user).be.ok;
 				should(connection).be.an.object;

@@ -52,7 +52,7 @@
  *   * {@link Arrow.Model#delete delete} *
  *   * {@link Arrow.Model#deleteAll deleteAll} *
  *   * {@link Arrow.Model#find find}
- *   * {@link Arrow.Model#findOne findOne} *
+ *   * {@link Arrow.Model#findByID findByID} *
  *   * {@link Arrow.Model#findAll findAll} *
  *   * {@link Arrow.Model#query query} *
  *   * {@link Arrow.Model#save save} *
