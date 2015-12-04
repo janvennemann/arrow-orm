@@ -476,8 +476,8 @@ describe('models', function () {
 
 		var User = orm.Model.define('user', {
 			fields: {
-				age: { type: Number},
-				height: { type: Number}
+				age: {type: Number},
+				height: {type: Number}
 			},
 			validator: function (instance) {
 				var errors = [];
@@ -697,6 +697,26 @@ describe('models', function () {
 			should(err).not.be.ok;
 			should(user).be.an.object;
 			should(user.get('onoff')).be.false;
+			callback();
+		});
+
+	});
+
+	it('should not crash on "get" bad field name', function (callback) {
+
+		var Connector = new orm.MemoryConnector();
+
+		var User = orm.Model.define('user', {
+			fields: {
+				good: {type: String}
+			},
+			connector: Connector
+		});
+
+		User.create({good: 'field'}, function (err, user) {
+			should(err).not.be.ok;
+			should(user).be.an.object;
+			should(user.get('bad')).be.undefined;
 			callback();
 		});
 
