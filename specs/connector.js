@@ -96,6 +96,28 @@ describe('connectors', function () {
 
 	});
 
+	it('should be able to create with methods', function () {
+
+		var called = false;
+
+		var MyConnector = orm.Connector.extend({
+			name: 'MyConnector',
+			query: function () {
+				called = true;
+			},
+			deleteAll: 'baz'
+		});
+
+		should(MyConnector).be.an.object;
+		var connector = new MyConnector();
+		should(connector).be.an.object;
+
+		connector.query();
+		should(called).be.true;
+		should(connector).have.property('deleteAll', 'baz');
+
+	});
+
 	it('should be able to create by extending another instance', function () {
 
 		var MyConnector = orm.Connector.extend({name: 'MyConnector'});
@@ -490,7 +512,7 @@ describe('connectors', function () {
 
 	describe("#lifecycle", function () {
 
-		it("should support no lifecycle methods", function (callback) {
+		it("should support lifecycle methods", function (callback) {
 			var MyConnector = orm.Connector.extend({name: 'MyConnector'});
 			var connector = new MyConnector();
 			connector.connect(callback);
@@ -749,11 +771,11 @@ describe('connectors', function () {
 					});
 				}
 			});
-			
+
 			// Simulate having an Arrow server.
 			orm.Connector.Arrow = {
 				models: {},
-				getGlobal: function() {
+				getGlobal: function () {
 					return this;
 				},
 				registerModelsForConnector: function (connector, models) {
@@ -810,7 +832,7 @@ describe('connectors', function () {
 					proceed();
 				}
 			], callback);
-			
+
 		});
 
 		it("should support custom primary key type using idAttribute", function () {

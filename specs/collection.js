@@ -7,14 +7,14 @@ var should = require('should'),
 describe('collections', function () {
 	var TestModel = Model.define('user', {
 		fields: {
-			name: { type: String },
-			age: { type: Number }
+			name: {type: String},
+			age: {type: Number}
 		}
 	});
 
 	function createInstances() {
 		return ['a', 'b', 'c'].map(function (name, i) {
-			return TestModel.instance({ name: name, age: i + 1 });
+			return TestModel.instance({name: name, age: i + 1});
 		});
 	}
 
@@ -75,12 +75,40 @@ describe('collections', function () {
 		});
 	});
 
+	describe('builtins', function () {
+		it('should let you concat', function () {
+			var instances = createInstances();
+			var len = instances.length;
+			var c = new Collection(null, instances);
+			c = c.concat(new Collection(null, instances));
+			should(c).have.property('length', len * 2);
+		});
+
+		it('should extend the length', function () {
+			var c = new Collection(null, createInstances());
+			c.length = 10;
+			should(c.length).equal(10);
+		});
+
+		it('should shorten the length', function () {
+			var c = new Collection(null, createInstances());
+			c.length = 2;
+			should(c.length).equal(2);
+		});
+
+		it('should remove all instances', function () {
+			var c = new Collection(null, createInstances());
+			c.length = 0;
+			should(c.length).equal(0);
+		});
+	});
+
 	describe('add', function () {
 		it('should add a new instance to a collection', function () {
 			var instances = createInstances();
 			var len = instances.length;
 			var c = new Collection(null, instances);
-			c.add(TestModel.instance({ name: 'd', age: 4 }));
+			c.add(TestModel.instance({name: 'd', age: 4}));
 			should(instances.length).equal(len); // don't modify the original array
 			should(c.length).equal(len + 1);
 		});
@@ -161,21 +189,21 @@ describe('collections', function () {
 		});
 	});
 
-	describe('instanceof', function() {
-		it('should be an array', function() {
+	describe('instanceof', function () {
+		it('should be an array', function () {
 			var c = new Collection();
 			should(c).be.an.array;
 			should(c.length).be.equal(0);
 		});
-		it('should be instanceof array', function() {
+		it('should be instanceof array', function () {
 			var c = new Collection();
 			should(c instanceof Array).be.true;
 		});
-		it('should be instanceof Collection', function() {
+		it('should be instanceof Collection', function () {
 			var c = new Collection();
 			should(c instanceof Collection).be.true;
 		});
-		it('should be instanceof Collection', function() {
+		it('should be instanceof Collection', function () {
 			var c = new Collection();
 			should(Array.isArray(c)).be.true;
 		});
