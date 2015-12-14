@@ -99,8 +99,8 @@ module.exports = function () {
 			should(API.parameters).have.property('email');
 			should(API.parameters).have.property('height');
 			should(API.parameters.name).have.property('description', 'name field');
-			should(API.parameters.name).have.property('optional', false);
-			should(API.parameters.name).have.property('required', true);
+			should(API.parameters.name).have.property('optional', true);
+			should(API.parameters.name).have.property('required', false);
 			should(API.parameters.name).have.property('type', 'body');
 			should(API.parameters.age).have.property('description', 'age field');
 			should(API.parameters.age).have.property('optional', true);
