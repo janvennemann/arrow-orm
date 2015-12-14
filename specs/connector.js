@@ -16,11 +16,42 @@ describe('connectors', function () {
 		orm.Connector.removeAllListeners();
 	});
 
+	it('should require an implementation', function () {
+		(function () {
+			var MyConnector = orm.Connector.extend();
+		}).should.throw('Missing required parameter "impl" to Connector.extend!');
+	});
+
 	it('should require a name', function () {
 		(function () {
 			var MyConnector = orm.Connector.extend({});
 			var connector = new MyConnector();
 		}).should.throw('connector is required to have a name');
+	});
+
+	it('should be able to load config by filename', function () {
+		var loggedInfo = false;
+		var loadedModels = false;
+		var MyConnector = require('./connector/mock/lib/index').create(orm.Connector.Arrow = {
+			Version: '1.5.0',
+			Connector: orm.Connector,
+			getGlobal: function () { return this },
+			loadModelsForConnector: function () {
+				loadedModels = true;
+				return {};
+			},
+			logger: {
+				info: function () {
+					loggedInfo = true;
+				}
+			}
+		});
+		var connector = new MyConnector();
+		connector.logDefaultConfig();
+		should(loggedInfo).be.ok;
+		should(loadedModels).be.ok;
+
+		delete orm.Connector.Arrow;
 	});
 
 	it('should not serialize the full object graph', function () {
