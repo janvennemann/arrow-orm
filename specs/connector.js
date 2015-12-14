@@ -1,8 +1,11 @@
 var should = require('should'),
 	async = require('async'),
 	_ = require('lodash'),
+	path = require('path'),
 	util = require('util'),
 	orm = require('../');
+
+var mockPath = path.resolve(__dirname + '/connector/mock/lib/index');
 
 describe('connectors', function () {
 
@@ -32,7 +35,7 @@ describe('connectors', function () {
 	it('should be able to load config by filename', function () {
 		var loggedInfo = false;
 		var loadedModels = false;
-		var MyConnector = require('./connector/mock/lib/index').create(orm.Connector.Arrow = {
+		var MyConnector = require(mockPath).create(orm.Connector.Arrow = {
 			Version: '1.5.0',
 			Connector: orm.Connector,
 			getGlobal: function () { return this; },
