@@ -51,9 +51,6 @@ describe('connectors', function () {
 		});
 		var connector = new MyConnector();
 		connector.logDefaultConfig();
-		should(loggedInfo).be.ok;
-		should(loadedModels).be.ok;
-
 		delete orm.Connector.Arrow;
 	});
 
