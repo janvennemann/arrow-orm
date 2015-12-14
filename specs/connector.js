@@ -35,7 +35,7 @@ describe('connectors', function () {
 		var MyConnector = require('./connector/mock/lib/index').create(orm.Connector.Arrow = {
 			Version: '1.5.0',
 			Connector: orm.Connector,
-			getGlobal: function () { return this },
+			getGlobal: function () { return this; },
 			loadModelsForConnector: function () {
 				loadedModels = true;
 				return {};
