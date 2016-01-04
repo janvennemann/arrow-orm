@@ -61,7 +61,6 @@ module.exports = function () {
 				connector: Connector
 			});
 
-
 			should(orm.Model.getModels()).have.length(2);
 
 			should(orm.Model.getModels()[0]).equal(Cat);
@@ -123,6 +122,33 @@ module.exports = function () {
 					connector: Connector
 				});
 			}).throw(errorPrefix + '"user cry.hey"');
+		});
+
+		it('should allow resetting primary keys for memory connector', function () {
+			var Connector = new orm.MemoryConnector();
+			var User = orm.Model.define('user', {
+				fields: {
+					name: {
+						type: String,
+						default: 'Jeff'
+					}
+				},
+				connector: Connector
+			});
+			orm.MemoryConnector.resetPrimaryKeys();
+			User.create(function (err, instance) {
+				should(instance.getPrimaryKey()).be.eql(1);
+			});
+			User.create(function (err, instance) {
+				should(instance.getPrimaryKey()).be.eql(2);
+			});
+			User.create(function (err, instance) {
+				should(instance.getPrimaryKey()).be.eql(3);
+			});
+			orm.MemoryConnector.resetPrimaryKeys();
+			User.create(function (err, instance) {
+				should(instance.getPrimaryKey()).be.eql(1);
+			});
 		});
 
 		it('should be to util.inspect serialize', function () {
